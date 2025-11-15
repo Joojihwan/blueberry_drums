@@ -5,15 +5,16 @@ type DrumMap = {
   [key: string]: string; // key → audio file path
 };
 
+const base = import.meta.env.BASE_URL; // <- Vite가 알아서 / 또는 /repo-name/ 으로 채워줌
+
 // 기본 매핑 (A = kick, S = snare, D = hihat)
 const defaultMapping: DrumMap = {
-  a: "/kick.wav",
-  s: "/snare.wav",
-  d: "/hihat.wav",
+  a: `${base}kick.wav`,
+  s: `${base}snare.wav`,
+  d: `${base}hihat.wav`,
 };
 
 export const useDrumPlayer = (mapping: DrumMap = defaultMapping) => {
-  // 각 키별로 여러 Audio 객체를 풀링해서 빠른 연타 대응
   const audioPool = useRef<{ [key: string]: HTMLAudioElement[] }>({});
 
   const getAudioInstance = (key: string) => {
@@ -25,7 +26,6 @@ export const useDrumPlayer = (mapping: DrumMap = defaultMapping) => {
 
     const pool = audioPool.current[key];
 
-    // 재생 중이 아닌 Audio 찾기
     const idle = pool.find(a => a.paused);
 
     if (idle) {
@@ -33,7 +33,6 @@ export const useDrumPlayer = (mapping: DrumMap = defaultMapping) => {
       return idle;
     }
 
-    // 없으면 새 Audio 생성
     const newAudio = new Audio(mapping[key]);
     pool.push(newAudio);
 
