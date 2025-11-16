@@ -1,48 +1,26 @@
-// src/hooks/useDrumPlayer.ts
 import { useRef } from "react";
 
-type DrumMap = {
-  [key: string]: string; // key → audio file path
-};
+export type DrumMap = { [key: string]: string };   
 
-const base = import.meta.env.BASE_URL; // <- Vite가 알아서 / 또는 /repo-name/ 으로 채워줌
-
-// 기본 매핑 (A = kick, S = snare, D = hihat)
-const defaultMapping: DrumMap = {
-  a: `${base}kick.wav`,
-  s: `${base}snare.wav`,
-  d: `${base}hihat.wav`,
-};
-
-export const useDrumPlayer = (mapping: DrumMap = defaultMapping) => {
+export const useDrumPlayer = (mapping: DrumMap) => {
   const audioPool = useRef<{ [key: string]: HTMLAudioElement[] }>({});
+  const POOL_SIZE = 8;
 
-  const getAudioInstance = (key: string) => {
-    if (!mapping[key]) return null;
+  const play = (key: string) => {
+    const src = mapping[key];
+    if (!src) return;
 
     if (!audioPool.current[key]) {
-      audioPool.current[key] = [];
+      audioPool.current[key] = Array.from(
+        { length: POOL_SIZE },
+        () => new Audio(src)
+      );
     }
 
     const pool = audioPool.current[key];
-
-    const idle = pool.find(a => a.paused);
-
-    if (idle) {
-      idle.currentTime = 0;
-      return idle;
-    }
-
-    const newAudio = new Audio(mapping[key]);
-    pool.push(newAudio);
-
-    return newAudio;
-  };
-
-  const play = (key: string) => {
-    const audio = getAudioInstance(key);
-    if (!audio) return;
-    audio.play();
+    const instance = pool.find(a => a.paused) || pool[0];
+    instance.currentTime = 0;
+    instance.play();
   };
 
   return { play };
