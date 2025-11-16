@@ -40,3 +40,73 @@
   /* ===== Kick ===== */
   .kick { left: 49%; top: 48%; width: 31%; height: 10%; }
 }
+.drum-keyboard {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+
+  .key-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .space-row {
+    margin-top: 4px;
+  }
+
+  .keycap {
+    min-width: 44px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: #f7f7f7;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    box-sizing: border-box;
+    transition: transform 0.05s ease, box-shadow 0.05s ease,
+      border-color 0.05s ease;
+  }
+
+  .keycap.space {
+    min-width: 180px;
+  }
+
+  .keycap.active {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.4);
+    transform: translateY(1px);
+  }
+
+  .keycap.empty {
+    visibility: hidden;
+  }
+
+  .key-label {
+    font-weight: 600;
+  }
+
+  .key-drum {
+    font-size: 10px;
+    opacity: 0.7;
+  }
+}
+
+/* 드럼을 누를 때 효과 */
+.hit-area.active {
+  background-color: rgba(0, 150, 255, 0.35);   /* 파란 하이라이트 */
+  box-shadow: 0 0 12px rgba(0, 150, 255, 0.6);
+  border: 2px solid #00aaff;
+  transition: background-color 0.05s, box-shadow 0.05s;
+}
+
+/* 모바일에서 touchstart 후 효과 유지 */
+.hit-area:active {
+  background-color: rgba(0, 150, 255, 0.35);
+}
